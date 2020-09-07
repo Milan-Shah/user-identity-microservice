@@ -8,11 +8,11 @@
         <version>2.3.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.shah.photo.api.users</groupId>
-    <artifactId>users-microservice</artifactId>
+    <groupId>com.shah.photo.app.account.management</groupId>
+    <artifactId>account-management-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>users-microservice</name>
-    <description>User Microservice for Photo app</description>
+    <name>account-management-microservice</name>
+    <description>Account Management Microservice for Photo app</description>
 
     <properties>
         <java.version>11</java.version>

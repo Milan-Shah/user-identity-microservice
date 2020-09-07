@@ -1,10 +1,10 @@
-package com.shah.photoapp.api.users.usersmicroservice;
+package com.shah.photo.app.api.gateway.apigateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UsersMicroserviceApplicationTests {
+class ApiGatewayApplicationTests {
 
     @Test
     void contextLoads() {
