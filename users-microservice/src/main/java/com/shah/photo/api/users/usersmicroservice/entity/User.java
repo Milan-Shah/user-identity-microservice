@@ -22,6 +22,9 @@ public class User {
     @Size(min = 2, message = "Last name must be greater than 2 characters.")
     public String lastName;
 
+    @Column
+    public String userId;
+
     @Column(nullable = false, unique = true)
     @Email
     public String email;
@@ -34,11 +37,12 @@ public class User {
 
     public User(Long id, @Size(min = 2, message = "First name must be greater than 2 characters.")
             String firstName, @Size(min = 2, message = "Last name must be greater than 2 characters.")
-            String lastName, @Email String email, @Size(min = 8, message = "Password must be 8 characters.")
+            String lastName, String userId, @Email String email, @Size(min = 8, message = "Password must be 8 characters.")
             String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userId = userId;
         this.email = email;
         this.password = password;
     }
@@ -57,6 +61,14 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
