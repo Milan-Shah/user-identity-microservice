@@ -15,13 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private Environment env;
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public WebSecurity(Environment env, UserServiceImpl userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurity(Environment env, UserServiceImpl userServiceImpl, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.env = env;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -30,18 +30,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 //        http.authorizeRequests().antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip"))
 //                .and().addFilter(getAuthenticationFilter());
-        http.authorizeRequests().antMatchers("/**").permitAll().and().addFilter(getAuthenticationFilter());
+        http.authorizeRequests().antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip")).and().addFilter(getAuthenticationFilter());
         http.headers().frameOptions().disable();
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, env, authenticationManager());
-        authenticationFilter.setFilterProcessesUrl(env.getProperty("login.url.path"));
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userServiceImpl, env, authenticationManager());
         return authenticationFilter;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userServiceImpl).passwordEncoder(bCryptPasswordEncoder);
     }
 }

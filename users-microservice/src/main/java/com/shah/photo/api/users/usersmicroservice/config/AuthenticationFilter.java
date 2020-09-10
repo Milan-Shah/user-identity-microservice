@@ -4,18 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shah.photo.api.users.usersmicroservice.entity.LoginRequestModel;
 import com.shah.photo.api.users.usersmicroservice.entity.User;
 import com.shah.photo.api.users.usersmicroservice.service.UserServiceImpl;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 
 
@@ -26,11 +30,11 @@ import java.util.Date;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
     private Environment environment;
 
-    public AuthenticationFilter(UserServiceImpl userService, Environment environment, AuthenticationManager authenticationManager) {
-        this.userService = userService;
+    public AuthenticationFilter(UserServiceImpl userServiceImpl, Environment environment, AuthenticationManager authenticationManager) {
+        this.userServiceImpl = userServiceImpl;
         this.environment = environment;
         super.setAuthenticationManager(authenticationManager);
     }
@@ -54,12 +58,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        String userName = ((User) authResult.getPrincipal()).getEmail();
-        String userId = this.userService.findByEmail(userName).getUserId();
+        String userName = ((UserDetails) authResult.getPrincipal()).getUsername();
+        String userId = this.userServiceImpl.findByEmail(userName).getUserId();
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         String token = Jwts.builder()
                 .setSubject(userId)
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("token.expiration_time"))))
-                .signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret"))
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("token.expiration"))))
+                .signWith(key)
                 .compact();
 
         response.addHeader("token", token);

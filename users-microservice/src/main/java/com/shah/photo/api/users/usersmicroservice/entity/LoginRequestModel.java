@@ -1,14 +1,13 @@
 package com.shah.photo.api.users.usersmicroservice.entity;
 
+import com.sun.istack.NotNull;
+
 public class LoginRequestModel {
 
+    @NotNull
     private String email;
+    @NotNull
     private String password;
-
-    public LoginRequestModel(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 
     public String getEmail() {
         return email;

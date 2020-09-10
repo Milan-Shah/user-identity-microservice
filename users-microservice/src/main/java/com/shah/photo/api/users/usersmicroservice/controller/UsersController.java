@@ -21,7 +21,7 @@ public class UsersController {
     private Environment env;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
 
     @GetMapping(path = "/status")
     public ResponseEntity status() {
@@ -32,13 +32,13 @@ public class UsersController {
     produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity createUser(@Valid @RequestBody User user) {
         user.setUserId(UUID.randomUUID().toString());
-        this.userService.createUser(user);
+        this.userServiceImpl.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @GetMapping
     public Iterable<User> findAll() {
-        return this.userService.findAll();
+        return this.userServiceImpl.findAll();
     }
 
 //    @PostMapping(path = "/login2")
