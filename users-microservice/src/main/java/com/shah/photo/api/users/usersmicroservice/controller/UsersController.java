@@ -25,7 +25,8 @@ public class UsersController {
 
     @GetMapping(path = "/status")
     public ResponseEntity status() {
-        return new ResponseEntity(HttpStatus.OK);
+        String s = "Working on port: " + env.getProperty("local.server.port") + " , with token = " + env.getProperty("token.secret");
+        return ResponseEntity.status(HttpStatus.OK).body(s);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
